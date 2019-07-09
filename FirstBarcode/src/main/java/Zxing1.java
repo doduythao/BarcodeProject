@@ -11,14 +11,17 @@ import java.io.IOException;
 public class Zxing1 {
 
   public static void main(String[] args) {
-    File folder = new File("FirstBarcode/src/resource/EAN13");
+    File folder = new File("dataset/Munster-original");
     File[] listOfFiles = folder.listFiles();
+    int recognizables = 0;
+    long start = System.currentTimeMillis();
+
     for (int i = 0; i < listOfFiles.length; i++) {
       File file = listOfFiles[i];
+      System.out.print(file.getName() + ": ");
       BufferedImage image = null;
       BinaryBitmap bitmap = null;
       Result result = null;
-
       try {
         image = ImageIO.read(file);
 //                System.out.println("Before resize: width-" + image.getWidth() + "|height-" + image.getHeight());
@@ -37,16 +40,20 @@ public class Zxing1 {
       }
 
       EAN13Reader reader = new EAN13Reader();
-      System.out.print(file.getName() + ": ");
       try {
         result = reader.decode(bitmap);
         System.out.println(result.getText());
+        recognizables++;
+
       } catch (NotFoundException e) {
         System.out.println(e.getMessage());
       } catch (FormatException e) {
         System.out.println(e.getMessage());
       }
     }
+    long finish = System.currentTimeMillis();
+    System.out.println((float)recognizables/listOfFiles.length);
+    System.out.println((float)(finish-start)/listOfFiles.length);
 
   }
 
