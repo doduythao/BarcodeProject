@@ -11,7 +11,7 @@ import java.io.IOException;
 public class Zxing1 {
 
   public static void main(String[] args) {
-    File folder = new File("dataset/Munster-original");
+    File folder = new File("FirstBarcode/src/resource/EAN13");
     File[] listOfFiles = folder.listFiles();
     int recognizables = 0;
     long start = System.currentTimeMillis();
