@@ -6,6 +6,7 @@
     <JAVADOC>
       <root url="jar://$MAVEN_REPOSITORY$/org/imgscalr/imgscalr-lib/4.2/imgscalr-lib-4.2-javadoc.jar!/" />
     </JAVADOC>
+    <MATHEMATICA_LIBRARY />
     <SOURCES>
       <root url="jar://$MAVEN_REPOSITORY$/org/imgscalr/imgscalr-lib/4.2/imgscalr-lib-4.2-sources.jar!/" />
     </SOURCES>

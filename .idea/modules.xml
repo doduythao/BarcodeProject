@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/BarcodeProject.iml" filepath="$PROJECT_DIR$/.idea/BarcodeProject.iml" />
-      <module fileurl="file://$PROJECT_DIR$/FirstBarcode/FirstBarcode.iml" filepath="$PROJECT_DIR$/FirstBarcode/FirstBarcode.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Zxing/FirstBarcode.iml" filepath="$PROJECT_DIR$/Zxing/FirstBarcode.iml" />
     </modules>
   </component>
 </project>
