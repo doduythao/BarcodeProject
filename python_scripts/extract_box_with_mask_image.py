@@ -3,7 +3,7 @@ import cv2 as cv
 import sys
 import os
 
-# remember no '/' at each param!
+# remember no '/' at the end of each param!
 # extract boxes using mask as mask image (black and white image)
 
 img_path = sys.argv[1]

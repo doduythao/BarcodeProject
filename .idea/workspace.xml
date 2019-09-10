@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e6fbc1df-a7f2-4b75-94b3-bf77c54eeca9" name="Default" comment="" />
+    <list default="true" id="e6fbc1df-a7f2-4b75-94b3-bf77c54eeca9" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/shell_scripts/augment.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_scripts/barcode_generator.py" beforeDir="false" afterPath="$PROJECT_DIR$/python_scripts/barcode_generator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_scripts/extract_box_with_mask_image.py" beforeDir="false" afterPath="$PROJECT_DIR$/python_scripts/extract_box_with_mask_image.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shell_scripts/extract_soros_sharp_images.sh" beforeDir="false" afterPath="$PROJECT_DIR$/shell_scripts/extract_soros_sharp_images.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shell_scripts/resize_image.sh" beforeDir="false" afterPath="$PROJECT_DIR$/shell_scripts/resize_image.sh" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
