@@ -39,7 +39,7 @@ option = [{'background': '#e3e3e3',
            'module_width': 0.4,
            'module_height': 15.0}]
 
-ean13_array = random.sample(range(1000000000000, 9999999999999), 10)
+ean13_array = random.sample(range(1000000000000, 9999999999999), 100)
 
 for i in ean13_array:
     ean = EAN(str(i), writer=ImageWriter())
