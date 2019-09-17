@@ -1,4 +1,4 @@
-gyro_01
-gyro_02
-gyro_03
-gyro_04
+g1
+g2
+g3
+g4
