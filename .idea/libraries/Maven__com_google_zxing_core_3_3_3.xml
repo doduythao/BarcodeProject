@@ -6,7 +6,6 @@
     <JAVADOC>
       <root url="jar://$MAVEN_REPOSITORY$/com/google/zxing/core/3.3.3/core-3.3.3-javadoc.jar!/" />
     </JAVADOC>
-    <MATHEMATICA_LIBRARY />
     <SOURCES>
       <root url="jar://$MAVEN_REPOSITORY$/com/google/zxing/core/3.3.3/core-3.3.3-sources.jar!/" />
     </SOURCES>
