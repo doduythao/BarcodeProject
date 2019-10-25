@@ -9,7 +9,7 @@ magick convert "$1" -background white -gravity center -extent "$size" "$sname"_t
 
 len=${#oplist[*]} #determine length of array
 
-rannum=$(shuf -i 1-14 -n 1)
+rannum=$(shuf -i 0-13 -n 1)
 ./rotate3D ${oplist[$rannum]} "$sname"_t.png "$sname"_.png
 
 rm "$sname"_t.png

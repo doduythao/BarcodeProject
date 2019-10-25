@@ -4,6 +4,7 @@ from scipy import ndimage
 import numpy as np
 import sys
 import os
+import random
 import multiprocessing
 
 # remember no '/' at the end of each param!
@@ -12,7 +13,7 @@ import multiprocessing
 # 3 is the filter after for each kernel in set 2.
 
 org_path = sys.argv[1]
-inp_path = sys.argv[2]
+# inp_path = sys.argv[2]
 out_path = sys.argv[3]
 
 k1 = cv.imread('../matlab/uniform_kernel/kernel_01.png')
@@ -58,7 +59,7 @@ def apply_kernel(file_name, k, norm_f):
     # result2 = ndimage.convolve(norm_image[:, :, 2], norm_f) / (1.9*np.sum(norm_f))
     result = np.stack((result0, result1, result2), axis=2).astype(np.float32)
 
-    cv.imwrite(inp_path + '/' + name_no_ext + '-k' + str(k) + '.png', img)
+    # cv.imwrite(inp_path + '/' + name_no_ext + '-k' + str(k) + '.png', img)
     cv.imwrite(out_path + '/' + name_no_ext + '-k' + str(k) + '.png', result * 255)
 
 
@@ -71,14 +72,22 @@ EXT = [".jpg", ".png"]
 
 
 def main():
-    pool = multiprocessing.Pool()
+    # pool = multiprocessing.Pool()
+    # for filename in [f for f in os.listdir(org_path) if f.endswith(tuple(EXT))]:
+    #     pool.apply_async(apply_kernel, [filename, 1, norm_k1])
+    #     pool.apply_async(apply_kernel, [filename, 2, norm_k2])
+    #     pool.apply_async(apply_kernel, [filename, 3, norm_k3])
+    #     pool.apply_async(apply_kernel, [filename, 4, norm_k4])
+    # pool.close()
+    # pool.join()
     for filename in [f for f in os.listdir(org_path) if f.endswith(tuple(EXT))]:
-        pool.apply_async(apply_kernel, [filename, 1, norm_k1])
-        pool.apply_async(apply_kernel, [filename, 2, norm_k2])
-        pool.apply_async(apply_kernel, [filename, 3, norm_k3])
-        pool.apply_async(apply_kernel, [filename, 4, norm_k4])
-    pool.close()
-    pool.join()
+        ran_num = random.randint(0, 2)
+        if ran_num == 0:
+            apply_kernel(filename, ran_num, norm_k1)
+        elif ran_num == 1:
+            apply_kernel(filename, ran_num, norm_k2)
+        else:
+            apply_kernel(filename, ran_num, norm_k3)
 
 
 if __name__ == '__main__':
