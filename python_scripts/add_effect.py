@@ -36,12 +36,12 @@ def apply_effect(im_arr):
         return adjusted
     elif effect == 'patch':
         new_im = im_arr
-        height, weight, _ = im_arr.shape
+        height, width, _ = im_arr.shape
         patch_height = int(height * random.randint(20, 50) / 100)
-        patch_weight = int(weight * random.randint(25, 45) / 100)
+        patch_width = int(width * random.randint(25, 45) / 100)
         p_x = int(height * random.randint(0, 50) / 100)
-        p_y = int(weight * random.randint(0, 50) / 100)
-        new_im[p_x:p_x + patch_height, p_y:p_y + patch_weight, :] = 0
+        p_y = int(width * random.randint(0, 50) / 100)
+        new_im[p_x:p_x + patch_height, p_y:p_y + patch_width, :] = 0
         return new_im
 
 
