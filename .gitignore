@@ -3,3 +3,5 @@ synthetic_data/
 .DS_Store
 Zxing/target/
 draft.py
+logs/
+data/

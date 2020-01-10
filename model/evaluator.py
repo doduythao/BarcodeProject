@@ -1,18 +1,18 @@
 import torch
 import torch.utils.data
 from torchvision import transforms
-from dataset import Dataset
+from dataset import BarcodeDataset
 from util import get_digit1
 
 
 class Evaluator(object):
-    def __init__(self, path_to_lmdb_dir):
+    def __init__(self, img_path, txt_path):
         transform = transforms.Compose([
-            transforms.CenterCrop([54, 54]),
+            transforms.Resize([285, 285]),
             transforms.ToTensor(),
             transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
         ])
-        self._loader = torch.utils.data.DataLoader(Dataset(path_to_lmdb_dir, transform), batch_size=128, shuffle=False)
+        self._loader = torch.utils.data.DataLoader(BarcodeDataset(img_path, txt_path, transform), batch_size=128, shuffle=False)
 
     def evaluate(self, model):
         num_correct = 0

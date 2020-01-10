@@ -28,8 +28,7 @@ parser.add_argument('-ds', '--decay_steps', default=10000, type=int, help='Defau
 parser.add_argument('-dr', '--decay_rate', default=0.9, type=float, help='Default 0.9')
 
 
-def _loss(digit2_logits, digit3_logits, digit4_logits, digit5_logits, digit6_logits, digit7_logits, digit8_logits,
-          digit9_logits, digit10_logits, digit11_logits, digit12_logits, digit13_logits, digits_labels):
+def _loss(digit2_logits, digit3_logits, digit4_logits, digit5_logits, digit6_logits, digit7_logits, digit8_logits, digit9_logits, digit10_logits, digit11_logits, digit12_logits, digit13_logits, digits_labels):
     digit1_logits = get_digit1(digit2_logits, digit3_logits, digit4_logits, digit5_logits, digit6_logits, digit7_logits)
 
     digit1_cross_entropy = torch.nn.functional.cross_entropy(digit1_logits, digits_labels[0])
@@ -52,7 +51,7 @@ def _loss(digit2_logits, digit3_logits, digit4_logits, digit5_logits, digit6_log
     return loss
 
 
-def _train(path_to_train_lmdb_dir, path_to_val_lmdb_dir, path_to_log_dir,
+def _train(train_img_path, train_txt_path, val_img_path, val_txt_path, path_to_log_dir,
            path_to_restore_checkpoint_file, training_options):
     batch_size = training_options['batch_size']
     initial_learning_rate = training_options['learning_rate']
@@ -65,18 +64,18 @@ def _train(path_to_train_lmdb_dir, path_to_val_lmdb_dir, path_to_log_dir,
     best_accuracy = 0.0
     duration = 0.0
 
-    model = Model()
+    model = Model(21)
     model.cuda()
 
     transform = transforms.Compose([
-        transforms.RandomCrop([54, 54]),
-        transforms.ToTensor(),
-        transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
-    ])
-    train_loader = torch.utils.data.DataLoader(BarcodeDataset(path_to_train_lmdb_dir, transform),
+                transforms.Resize([285, 285]),
+                transforms.ToTensor(),
+                transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
+            ])
+    train_loader = torch.utils.data.DataLoader(BarcodeDataset(train_img_path, train_txt_path, transform),
                                                batch_size=batch_size, shuffle=True,
                                                num_workers=4, pin_memory=True)
-    evaluator = Evaluator(path_to_val_lmdb_dir)
+    evaluator = Evaluator(val_img_path, val_txt_path)
     optimizer = optim.SGD(model.parameters(), lr=initial_learning_rate, momentum=0.9, weight_decay=0.0005)
     scheduler = StepLR(optimizer, step_size=training_options['decay_steps'], gamma=training_options['decay_rate'])
 
@@ -93,15 +92,11 @@ def _train(path_to_train_lmdb_dir, path_to_val_lmdb_dir, path_to_log_dir,
         losses = np.empty([0], dtype=np.float32)
 
     while True:
-        for batch_idx, (images, length_labels, digits_labels) in enumerate(train_loader):
+        for batch_idx, (images, digits_labels) in enumerate(train_loader):
             start_time = time.time()
-            images, length_labels, digits_labels = images.cuda(), length_labels.cuda(), [digit_labels.cuda() for
-                                                                                         digit_labels in digits_labels]
-            length_logits, digit1_logits, digit2_logits, digit3_logits, digit4_logits, digit5_logits = model.train()(
-                images)
-            loss = _loss(length_logits, digit1_logits, digit2_logits, digit3_logits, digit4_logits, digit5_logits,
-                         length_labels, digits_labels)
-
+            images, digits_labels = images.cuda(), [digit_label.cuda() for digit_label in digits_labels]
+            digit2_logits, digit3_logits, digit4_logits, digit5_logits, digit6_logits, digit7_logits, digit8_logits, digit9_logits, digit10_logits, digit11_logits, digit12_logits, digit13_logits = model.train()(images)
+            loss = _loss(digit2_logits, digit3_logits, digit4_logits, digit5_logits, digit6_logits, digit7_logits, digit8_logits, digit9_logits, digit10_logits, digit11_logits, digit12_logits, digit13_logits, digits_labels)
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
@@ -139,8 +134,10 @@ def _train(path_to_train_lmdb_dir, path_to_val_lmdb_dir, path_to_log_dir,
 
 
 def main(args):
-    path_to_train_lmdb_dir = os.path.join(args.data_dir, 'train.lmdb')
-    path_to_val_lmdb_dir = os.path.join(args.data_dir, 'val.lmdb')
+    train_img_path ='data/real/img/'
+    train_txt_path ='data/real/txt/'
+    val_img_path   ='data/real/img/'
+    val_txt_path   ='data/real/txt/'
     path_to_log_dir = args.logdir
     path_to_restore_checkpoint_file = args.restore_checkpoint
     training_options = {
@@ -155,7 +152,7 @@ def main(args):
         os.makedirs(path_to_log_dir)
 
     print('Start training')
-    _train(path_to_train_lmdb_dir, path_to_val_lmdb_dir, path_to_log_dir,
+    _train(train_img_path, train_txt_path, val_img_path, val_txt_path, path_to_log_dir,
            path_to_restore_checkpoint_file, training_options)
     print('Done')
 

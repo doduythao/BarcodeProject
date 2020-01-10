@@ -1,7 +1,6 @@
 import os
 import os.path as path
 import numpy as np
-import cv2
 import torch
 import torch.utils.data as data
 from PIL import Image
@@ -42,10 +41,10 @@ class BarcodeDataset(data.Dataset):
         img_path = self.file_list[idx]
         basename_noext = path.splitext(path.basename(img_path))[0]
         label_path = path.join(self.label_dir, basename_noext + '.txt')
-        img_cv = cv2.imread(img_path)
+        img_pil = Image.open(path.join(self.image_dir,img_path))
         with open(label_path) as f:
             raw_label = f.readline().strip()
         raw_digits = [int(c) for c in list(raw_label)]
         digits = process_label(raw_digits)
-        img = self.transform(img_cv)
+        img = self.transform(img_pil)
         return img, digits

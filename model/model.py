@@ -2,11 +2,10 @@ import glob
 import os
 
 import torch
-import torch.jit
 import torch.nn as nn
 
 
-class Model(torch.jit.ScriptModule):
+class Model(nn.Module):
     CHECKPOINT_FILENAME_PATTERN = 'model-{}.pth'
 
     __constants__ = ['_hidden1', '_hidden2', '_hidden3', '_hidden4', '_hidden5',
@@ -15,9 +14,9 @@ class Model(torch.jit.ScriptModule):
                      '_digit2', '_digit3', '_digit4', '_digit5', '_digit6', '_digit7', '_digit8', '_digit9', '_digit10',
                      '_digit11', '_digit12', '_digit13']
 
-    def __init__(self):
+    def __init__(self, A):
+        self.A = A
         super(Model, self).__init__()
-
         self._hidden1 = nn.Sequential(
             nn.Conv2d(in_channels=3, out_channels=48, kernel_size=5, padding=2),
             nn.BatchNorm2d(num_features=48),
@@ -75,7 +74,7 @@ class Model(torch.jit.ScriptModule):
             nn.Dropout(0.2)
         )
         self._hidden9 = nn.Sequential(
-            nn.Linear(192 * 7 * 7, 3072),
+            nn.Linear(192*A*A, 3072),
             nn.ReLU()
         )
         self._hidden10 = nn.Sequential(
@@ -95,7 +94,6 @@ class Model(torch.jit.ScriptModule):
         self._digit12 = nn.Sequential(nn.Linear(3072, 10))
         self._digit13 = nn.Sequential(nn.Linear(3072, 10))
 
-    @torch.jit.script_method
     def forward(self, x):
         x = self._hidden1(x)
         x = self._hidden2(x)
@@ -105,7 +103,7 @@ class Model(torch.jit.ScriptModule):
         x = self._hidden6(x)
         x = self._hidden7(x)
         x = self._hidden8(x)
-        x = x.view(x.size(0), 192 * 7 * 7)
+        x = x.view(x.size(0), 192*self.A*self.A)
         x = self._hidden9(x)
         x = self._hidden10(x)
 
