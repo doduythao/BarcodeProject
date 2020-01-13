@@ -2,7 +2,6 @@ import torch
 import torch.utils.data
 from torchvision import transforms
 from dataset import BarcodeDataset
-from util import get_digit1
 
 
 class Evaluator(object):
@@ -20,12 +19,9 @@ class Evaluator(object):
         with torch.no_grad():
             for batch_idx, (images, digits_labels) in enumerate(self._loader):
                 images, digits_labels = images.cuda(), [digit_labels.cuda() for digit_labels in digits_labels]
-                digit2_logits, digit3_logits, digit4_logits, digit5_logits, digit6_logits, digit7_logits, \
+                digit1_logits, digit2_logits, digit3_logits, digit4_logits, digit5_logits, digit6_logits, digit7_logits, \
                 digit8_logits, digit9_logits, digit10_logits, digit11_logits, digit12_logits, digit13_logits = \
                     model.eval()(images)
-
-                digit1_logits = get_digit1(digit2_logits, digit3_logits, digit4_logits, digit5_logits, digit6_logits,
-                                           digit7_logits)
 
                 digit1_prediction = digit1_logits.max(1)[1]
                 digit2_prediction = digit2_logits.max(1)[1]
