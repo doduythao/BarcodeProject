@@ -60,7 +60,7 @@ fi
 if [ "$rannum" -eq 9 ]; then
   ./cylinderize -m vertical -p 15 -w 50 -a -15 -r "$((h*2*5))" -v background -b white -f "#e3e3e3" "$sname"_v.png "$sname"_vc.png
   magick convert "$sname"_vc.png -gravity center -crop "$(magick identify -format '%[fx:w*0.6]x%[fx:h*0.2]+0+0' "$sname"_vc.png)" +repage "$sname"_vc.png
-  magick convert "$sname"_vc.png -gravity west -crop "$(magick identify -format '%[fx:w*0.7]x%[fx:h*0.7]+0+0' "$sname"_vc.png)" +repage "$sname"_vc.png
+  magick convert "$sname"_vc.png -gravity west -crop "$(magick identify -format '%[fx:w*0.6]x%[fx:h*0.6]+0+0' "$sname"_vc.png)" +repage "$sname"_vc.png
 fi
 
 if [ "$rannum" -eq 10 ]; then
