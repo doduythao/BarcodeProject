@@ -131,10 +131,10 @@ def _train(train_img_path, train_txt_path, val_img_path, val_txt_path, path_to_l
 
 
 def main(args):
-    train_img_path ='data/real/img/'
-    train_txt_path ='data/real/txt/'
-    val_img_path   ='data/real/img/'
-    val_txt_path   ='data/real/txt/'
+    train_img_path ='../model/data/real/img/'
+    train_txt_path ='../model/data/real/txt/'
+    val_img_path   ='../model/data/real/img/'
+    val_txt_path   ='../model/data/real/txt/'
     path_to_log_dir = args.logdir
     path_to_restore_checkpoint_file = args.restore_checkpoint
     training_options = {
