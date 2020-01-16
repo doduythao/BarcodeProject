@@ -5,3 +5,5 @@ Zxing/target/
 draft.py
 logs/
 data/
+__pycache__/
+.ipynb_checkpoints/
