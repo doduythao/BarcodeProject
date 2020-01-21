@@ -134,8 +134,8 @@ def _train(train_img_path, train_txt_path, val_img_path, val_txt_path, path_to_l
 
 
 def main(args):
-    train_img_path ='data/real/img/'
-    train_txt_path ='data/real/txt/'
+    train_img_path ='data/syn_train/img/'
+    train_txt_path ='data/syn_train/gt/'
     val_img_path   ='data/real/img/'
     val_txt_path   ='data/real/txt/'
     path_to_log_dir = args.logdir
