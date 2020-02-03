@@ -5,6 +5,8 @@ from datetime import datetime
 
 import numpy as np
 import torch
+torch.manual_seed(1)
+
 import torch.nn.functional
 import torch.optim as optim
 import torch.utils.data

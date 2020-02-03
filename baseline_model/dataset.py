@@ -21,9 +21,15 @@ class BarcodeDataset(data.Dataset):
         img_path = self.file_list[idx]
         basename_noext = path.splitext(path.basename(img_path))[0]
         label_path = path.join(self.label_dir, basename_noext + '.txt')
+        
         img_pil = Image.open(path.join(self.image_dir, img_path)).convert('RGB')
+        width, height = img_pil.size
+        max_edge = max(width, height)
+        new_im = Image.new('RGB', (max_edge, max_edge), (255, 255, 255))
+        new_im.paste(img_pil, (int((max_edge-width)/2), int((max_edge-height)/2)))
+        
         with open(label_path) as f:
             raw_label = f.readline().strip()
         digits = [int(c) for c in list(raw_label)]
-        img = self.transform(img_pil)
+        img = self.transform(new_im)
         return img, digits

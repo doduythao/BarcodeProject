@@ -5,6 +5,8 @@ from datetime import datetime
 
 import numpy as np
 import torch
+torch.manual_seed(1)
+
 import torch.nn.functional
 import torch.optim as optim
 import torch.utils.data
@@ -44,7 +46,7 @@ def _loss(digit2_logits, digit3_logits, digit4_logits, digit5_logits, digit6_log
     digit11_cross_entropy = torch.nn.functional.cross_entropy(digit11_logits, digits_labels[10])
     digit12_cross_entropy = torch.nn.functional.cross_entropy(digit12_logits, digits_labels[11])
     digit13_cross_entropy = torch.nn.functional.cross_entropy(digit13_logits, digits_labels[12])
-    loss = digit1_cross_entropy + digit2_cross_entropy + digit3_cross_entropy + digit4_cross_entropy \
+    loss = 5*digit1_cross_entropy + digit2_cross_entropy + digit3_cross_entropy + digit4_cross_entropy \
            + digit5_cross_entropy + digit6_cross_entropy + digit7_cross_entropy + digit8_cross_entropy \
            + digit9_cross_entropy + digit10_cross_entropy + digit11_cross_entropy + digit12_cross_entropy \
            + digit13_cross_entropy
