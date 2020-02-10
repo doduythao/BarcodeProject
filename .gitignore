@@ -4,10 +4,7 @@ synthetic_data/
 Zxing/target/
 draft.py
 logs/
-logs0/
-logs1/
-logs2/
-logs3/
+logs*/
 data/
 __pycache__/
 .ipynb_checkpoints/

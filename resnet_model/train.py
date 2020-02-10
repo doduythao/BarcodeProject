@@ -63,11 +63,11 @@ def _train(train_img_path, train_txt_path, val_img_path, val_txt_path, path_to_l
     best_accuracy = 0.0
     duration = 0.0
 
-    model = Model(21)
+    model = Model()
     model.cuda()
 
     transform = transforms.Compose([
-                transforms.Resize([285, 285]),
+                transforms.Resize([512, 512]),
                 transforms.ToTensor(),
                 transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
             ])
@@ -99,7 +99,7 @@ def _train(train_img_path, train_txt_path, val_img_path, val_txt_path, path_to_l
             optimizer.zero_grad()
             loss.backward()
 
-            torch.nn.utils.clip_grad_norm_(model.parameters(), 3.0)
+#             torch.nn.utils.clip_grad_norm_(model.parameters(), 3.0)
             optimizer.step()
             scheduler.step()
             step += 1

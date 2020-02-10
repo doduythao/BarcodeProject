@@ -22,7 +22,7 @@ class Model(nn.Module):
             nn.BatchNorm2d(num_features=48),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=2, padding=1),
-            nn.Dropout(0.2)
+            nn.Dropout(0.1)
         )
         self._hidden2 = nn.Sequential(
             nn.Conv2d(in_channels=48, out_channels=64, kernel_size=5, padding=2),
@@ -43,35 +43,35 @@ class Model(nn.Module):
             nn.BatchNorm2d(num_features=160),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=1, padding=1),
-            nn.Dropout(0.2)
+            nn.Dropout(0.3)
         )
         self._hidden5 = nn.Sequential(
             nn.Conv2d(in_channels=160, out_channels=192, kernel_size=5, padding=2),
             nn.BatchNorm2d(num_features=192),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=2, padding=1),
-            nn.Dropout(0.2)
+            nn.Dropout(0.3)
         )
         self._hidden6 = nn.Sequential(
             nn.Conv2d(in_channels=192, out_channels=192, kernel_size=5, padding=2),
             nn.BatchNorm2d(num_features=192),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=1, padding=1),
-            nn.Dropout(0.2)
+            nn.Dropout(0.4)
         )
         self._hidden7 = nn.Sequential(
             nn.Conv2d(in_channels=192, out_channels=192, kernel_size=5, padding=2),
             nn.BatchNorm2d(num_features=192),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=2, padding=1),
-            nn.Dropout(0.2)
+            nn.Dropout(0.4)
         )
         self._hidden8 = nn.Sequential(
             nn.Conv2d(in_channels=192, out_channels=192, kernel_size=5, padding=2),
             nn.BatchNorm2d(num_features=192),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=1, padding=1),
-            nn.Dropout(0.2)
+            nn.Dropout(0.4)
         )
         self._hidden9 = nn.Sequential(
             nn.Linear(192*A*A, 3072),
