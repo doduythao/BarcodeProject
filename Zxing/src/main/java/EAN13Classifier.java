@@ -34,6 +34,7 @@ public class EAN13Classifier {
         Util aPane = new Util();
         //TODO : change to Barcode type we want
         EAN13Reader reader = new EAN13Reader();
+        int count = 0;
 
         for (int i = 0; i < listOfFiles.length; i++) {
             File file = listOfFiles[i];
@@ -58,20 +59,25 @@ public class EAN13Classifier {
                 imageN75 = aPane.rotateImageByDegrees(image, -75);
 
                 if (isDecodable(image, reader)
-                        || isDecodable(image90, reader) || isDecodable(imageFV, reader) || isDecodable(imageFH, reader)
-                        || isDecodable(imageB, reader) || isDecodable(imageD, reader)
-                        || isDecodable(image15, reader) || isDecodable(image30, reader) || isDecodable(image45, reader)
-                        || isDecodable(image60, reader) || isDecodable(image75, reader)
-                        || isDecodable(imageN15, reader) || isDecodable(imageN30, reader) || isDecodable(imageN45, reader)
-                        || isDecodable(imageN60, reader) || isDecodable(imageN75, reader)
-                )
-                    Files.copy(file.toPath(), Paths.get(recognizablePath, file.getName()));
-                else Files.copy(file.toPath(), Paths.get(unrecognizablePath, file.getName()));
+//                        || isDecodable(image90, reader) || isDecodable(imageFV, reader) || isDecodable(imageFH, reader)
+//                        || isDecodable(imageB, reader) || isDecodable(imageD, reader)
+//                        || isDecodable(image15, reader) || isDecodable(image30, reader) || isDecodable(image45, reader)
+//                        || isDecodable(image60, reader) || isDecodable(image75, reader)
+//                        || isDecodable(imageN15, reader) || isDecodable(imageN30, reader) || isDecodable(imageN45, reader)
+//                        || isDecodable(imageN60, reader) || isDecodable(imageN75, reader)
+                ){
+//                    Files.copy(file.toPath(), Paths.get(recognizablePath, file.getName()));
+                    count++;
+                }
+                else {
+//                    Files.copy(file.toPath(), Paths.get(unrecognizablePath, file.getName()));
+                }
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
+        System.out.println(count);
     }
 
     static boolean isDecodable(BufferedImage img, Reader reader) {

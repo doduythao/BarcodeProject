@@ -3,6 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="e6fbc1df-a7f2-4b75-94b3-bf77c54eeca9" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Zxing/src/main/java/EAN13Classifier.java" beforeDir="false" afterPath="$PROJECT_DIR$/Zxing/src/main/java/EAN13Classifier.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/matlab/blur_default_psf.m" beforeDir="false" afterPath="$PROJECT_DIR$/matlab/blur_default_psf.m" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -84,7 +86,7 @@
     <configuration name="EAN13Classifier" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="EAN13Classifier" />
       <module name="FirstBarcode" />
-      <option name="PROGRAM_PARAMETERS" value="D:\barcode-research\processed-dataset\muenster\mask\extracted1600-1200 D:\new-soros\rec D:\new-soros\unrec" />
+      <option name="PROGRAM_PARAMETERS" value="D:\real\img\ D:\recognizable\ D:\recognizable_no\" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -171,8 +173,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.extract_boxes" />
         <item itemvalue="Application.EAN13Classifier" />
+        <item itemvalue="Python.extract_boxes" />
       </list>
     </recent_temporary>
   </component>

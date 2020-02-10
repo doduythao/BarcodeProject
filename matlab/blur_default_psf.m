@@ -1,5 +1,5 @@
-org_dir = 'C:/Users/thao/11_o';
-output_dir  = 'C:/Users/thao/11_o_o';
+org_dir = 'C:/Users/thao/13_o';
+output_dir  = 'C:/Users/thao/13_oo';
 if( ~exist(output_dir, 'dir') )
     mkdir(output_dir);
 end
