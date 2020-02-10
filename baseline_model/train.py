@@ -5,6 +5,8 @@ from datetime import datetime
 
 import numpy as np
 import torch
+torch.manual_seed(1)
+
 import torch.nn.functional
 import torch.optim as optim
 import torch.utils.data
@@ -131,8 +133,8 @@ def _train(train_img_path, train_txt_path, val_img_path, val_txt_path, path_to_l
 
 
 def main(args):
-    train_img_path ='../model/data/real/img/'
-    train_txt_path ='../model/data/real/txt/'
+    train_img_path ='../model/data/syn_train/img/'
+    train_txt_path ='../model/data/syn_train/gt/'
     val_img_path   ='../model/data/real/img/'
     val_txt_path   ='../model/data/real/txt/'
     path_to_log_dir = args.logdir
