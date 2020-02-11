@@ -2,9 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e6fbc1df-a7f2-4b75-94b3-bf77c54eeca9" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/mobilenet_model/dataset.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobilenet_model/evaluate.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobilenet_model/evaluator.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobilenet_model/model.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobilenet_model/train.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mobilenet_model/visualize.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Zxing/src/main/java/EAN13Classifier.java" beforeDir="false" afterPath="$PROJECT_DIR$/Zxing/src/main/java/EAN13Classifier.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/matlab/blur_default_psf.m" beforeDir="false" afterPath="$PROJECT_DIR$/matlab/blur_default_psf.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Zxing/FirstBarcode.iml" beforeDir="false" afterPath="$PROJECT_DIR$/Zxing/FirstBarcode.iml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -36,7 +42,7 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1562660720312" />
     <property name="jdk.selected.PYTHON_MODULE" value="Python 3.6 (svhn)" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/baseline_model" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
@@ -50,14 +56,14 @@
     </option>
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\BarcodeProject\baseline_model" />
-      <recent name="D:\BarcodeProject\dataset" />
+    <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\BarcodeProject\shell_scripts" />
       <recent name="D:\BarcodeProject\python_scripts" />
-      <recent name="D:\BarcodeProject\matlab\sharpness-assessment" />
     </key>
-    <key name="MoveFile.RECENT_KEYS">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\BarcodeProject\mobilenet_model" />
+      <recent name="D:\BarcodeProject\baseline_model" />
+      <recent name="D:\BarcodeProject\dataset" />
       <recent name="D:\BarcodeProject\shell_scripts" />
       <recent name="D:\BarcodeProject\python_scripts" />
     </key>
