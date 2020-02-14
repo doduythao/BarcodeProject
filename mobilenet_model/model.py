@@ -9,42 +9,68 @@ import torchvision.models as models
 class Model(nn.Module):
     CHECKPOINT_FILENAME_PATTERN = 'model-{}.pth'
 
-    __constants__ = ['resnet',
+    __constants__ = ['mobilenet',
                      'fc', 'avgpool',
                      '_digit1', '_digit2', '_digit3', '_digit4', '_digit5', '_digit6', '_digit7', '_digit8', '_digit9',
                      '_digit10', '_digit11', '_digit12', '_digit13']
 
     def __init__(self):
         super(Model, self).__init__()
-        resnet = models.mobilenet_v2(pretrained=False)
-        modules = list(resnet.children())[:-2]
-        self.resnet = nn.Sequential(*modules)
-        self.avgpool = nn.AvgPool2d(kernel_size=7, stride=1, padding=0)
-        self.fc = nn.Sequential(
-            nn.Linear(2048*7*7, 4096),
-            nn.ReLU()
-        )
+        self.mobilenet = models.mobilenet_v2(pretrained=False).features
+        # modules = list(resnet.children())[:-1]
+        # print(resnet.features)
+        # self.resnet = nn.Sequential(*modules)
+        # self.avgpool = nn.AvgPool2d(kernel_size=7, stride=1, padding=0)
+        # self.fc = nn.Sequential(
+        #     nn.Linear(3*330*330, 4096),
+        #     nn.ReLU()
+        # )
         
         # self._digit1 = nn.Sequential(nn.Linear(4096, 10))
-        self._digit2 = nn.Sequential(nn.Linear(4096, 20))
-        self._digit3 = nn.Sequential(nn.Linear(4096, 20))
-        self._digit4 = nn.Sequential(nn.Linear(4096, 20))
-        self._digit5 = nn.Sequential(nn.Linear(4096, 20))
-        self._digit6 = nn.Sequential(nn.Linear(4096, 20))
-        self._digit7 = nn.Sequential(nn.Linear(4096, 20))
-        self._digit8 = nn.Sequential(nn.Linear(4096, 10))
-        self._digit9 = nn.Sequential(nn.Linear(4096, 10))
-        self._digit10 = nn.Sequential(nn.Linear(4096, 10))
-        self._digit11 = nn.Sequential(nn.Linear(4096, 10))
-        self._digit12 = nn.Sequential(nn.Linear(4096, 10))
-        self._digit13 = nn.Sequential(nn.Linear(4096, 10))
+        self._digit2 = nn.Sequential(
+            nn.Dropout(p=0.2, inplace=False),
+            nn.Linear(1280*11*11, 20, bias=True))
+        self._digit3 = nn.Sequential(
+            nn.Dropout(p=0.2, inplace=False),
+            nn.Linear(1280*11*11, 20, bias=True))
+        self._digit4 = nn.Sequential(
+            nn.Dropout(p=0.2, inplace=False),
+            nn.Linear(1280*11*11, 20, bias=True))
+        self._digit5 = nn.Sequential(
+            nn.Dropout(p=0.2, inplace=False),
+            nn.Linear(1280*11*11, 20, bias=True))
+        self._digit6 = nn.Sequential(
+            nn.Dropout(p=0.2, inplace=False),
+            nn.Linear(1280*11*11, 20, bias=True))
+        self._digit7 = nn.Sequential(
+            nn.Dropout(p=0.2, inplace=False),
+            nn.Linear(1280*11*11, 20, bias=True))
+        
+        self._digit8 = nn.Sequential(
+            nn.Dropout(p=0.2, inplace=False),
+            nn.Linear(1280*11*11, 10, bias=True))
+        self._digit9 = nn.Sequential(
+            nn.Dropout(p=0.2, inplace=False),
+            nn.Linear(1280*11*11, 10, bias=True))
+        self._digit10 = nn.Sequential(
+            nn.Dropout(p=0.2, inplace=False),
+            nn.Linear(1280*11*11, 10, bias=True))
+        self._digit11 = nn.Sequential(
+            nn.Dropout(p=0.2, inplace=False),
+            nn.Linear(1280*11*11, 10, bias=True))
+        self._digit12 = nn.Sequential(
+            nn.Dropout(p=0.2, inplace=False),
+            nn.Linear(1280*11*11, 10, bias=True))
+        self._digit13 = nn.Sequential(
+            nn.Dropout(p=0.2, inplace=False),
+            nn.Linear(1280*11*11, 10, bias=True))
 
     def forward(self, x):
-        x = self.resnet(x)
-        x = self.avgpool(x)
-        print(x.shape)
+        x = self.mobilenet(x)
+        # x = self.avgpool(x)
+        # print(x.shape)
         x = x.reshape(x.size(0), -1)
-        x = self.fc(x)
+        # x = self.fc(x)
 
         # digit1_logits = self._digit1(x)
         digit2_logits = self._digit2(x)

@@ -20,7 +20,7 @@ mapping_indexes = {
 def process_label(raw_digits):
     how_encode = mapping_indexes[raw_digits[0]]
     digit2_7s = [raw_digits[i + 1] + 10 if how_encode[i] == 1 else raw_digits[i + 1] for i in range(6)]
-    return digit2_7s + raw_digits[7:]
+    return [raw_digits[0]] + digit2_7s + raw_digits[7:]
 
 
 class BarcodeDataset(data.Dataset):

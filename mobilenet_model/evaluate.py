@@ -41,7 +41,7 @@ def main(args):
         'decay_rate': args.decay_rate
     }
 
-    model = Model(21)
+    model = Model()
     model.cuda()
     model.restore(path_to_restore_checkpoint_file)
     
