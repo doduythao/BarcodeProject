@@ -5,13 +5,13 @@ from dataset import BarcodeDataset
 
 
 class Evaluator(object):
-    def __init__(self, img_path, txt_path):
+    def __init__(self, file_list_path, img_path, txt_path):
         transform = transforms.Compose([
-            transforms.Resize([512, 512]),
+            transforms.Resize([336, 336]),
             transforms.ToTensor(),
             transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
         ])
-        self._loader = torch.utils.data.DataLoader(BarcodeDataset(img_path, txt_path, transform), batch_size=128, shuffle=False)
+        self._loader = torch.utils.data.DataLoader(BarcodeDataset(file_list_path, img_path, txt_path, transform), batch_size=128, shuffle=False)
 
     def evaluate(self, model):
         num_correct, correct_1, correct_2, correct_3, correct_4, correct_5, correct_6, correct_7, correct_8, correct_9, correct_10, correct_11, correct_12, correct_13 = (0,)*14

@@ -16,12 +16,12 @@ class Model(nn.Module):
 
     def __init__(self):
         super(Model, self).__init__()
-        resnet = models.resnet50(pretrained=True)
+        resnet = models.resnet50(pretrained=False)
         modules = list(resnet.children())[:-2]
         self.resnet = nn.Sequential(*modules)
-        self.avgpool = nn.AvgPool2d(kernel_size=10, stride=1, padding=0)
+        self.avgpool = nn.AvgPool2d(kernel_size=7, stride=1, padding=0)
         self.fc = nn.Sequential(
-            nn.Linear(2048*7*7, 4096),
+            nn.Linear(2048*5*5, 4096),
             nn.ReLU()
         )
         
