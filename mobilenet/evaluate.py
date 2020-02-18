@@ -29,8 +29,8 @@ parser.add_argument('-dr', '--decay_rate', default=0.9, type=float, help='Defaul
 
 
 def main(args):
-    val_img_path   ='../model/data/real/img/'
-    val_txt_path   ='../model/data/real/txt/'
+    val_img_path   ='../model/data/syn_train/img/'
+    val_txt_path   ='../model/data/syn_train/gt/'
     path_to_log_dir = args.logdir
     path_to_restore_checkpoint_file = args.restore_checkpoint
     training_options = {
