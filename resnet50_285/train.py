@@ -29,6 +29,7 @@ parser.add_argument('-ds', '--decay_steps', default=10000, type=int, help='Defau
 parser.add_argument('-dr', '--decay_rate', default=0.95, type=float, help='Default 0.95')
 parser.add_argument('-tf', '--train_files', default='../model/data/syn_train.txt', help='directory to train list file')
 parser.add_argument('-vf', '--val_files', default='../model/data/real_full.txt', help='directory to validation list file')
+parser.add_argument('-ba', '--best_acc', default=0.0, type=float, help='Default 0.0')
 
 
 def _loss(digit1_logits, digit2_logits, digit3_logits, digit4_logits, digit5_logits, digit6_logits, digit7_logits, digit8_logits, digit9_logits, digit10_logits, digit11_logits, digit12_logits, digit13_logits, digits_labels):
@@ -62,7 +63,7 @@ def _train(train_img_path, train_txt_path, val_img_path, val_txt_path, path_to_l
 
     step = 0
     patience = initial_patience
-    best_accuracy = 0.0
+    best_accuracy = training_options['best_acc']
     duration = 0.0
 
     model = Model()
@@ -150,7 +151,8 @@ def main(args):
         'decay_steps': args.decay_steps,
         'decay_rate': args.decay_rate,
         'train_files': args.train_files,
-        'val_files': args.val_files
+        'val_files': args.val_files,
+        'best_acc': args.best_acc
     }
 
     if not os.path.exists(path_to_log_dir):
