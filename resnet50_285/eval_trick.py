@@ -1,20 +1,33 @@
 import argparse
 import os
-import time
-from datetime import datetime
-
+import heapq
 import numpy as np
 import torch
-
-import torch.nn.functional
+import torch.nn.functional as F
 import torch.optim as optim
 import torch.utils.data
 from torch.optim.lr_scheduler import StepLR
 from torchvision import transforms
-
 from dataset import BarcodeDataset
 from model import Model
 
+def checksum(sequence):
+    total = 0
+    for i in range(13):
+        if i%2 == 0:
+            total += int(sequence[i])
+        else:
+            total += int(sequence[i])*3
+    return total%10==0
+
+def make_combination(input_array):
+    abin = ['']
+    for i in range(13):
+        if isinstance(input_array[i], list):
+            abin = [j+str(input_array[i][0]) for j in abin] + [j+str(input_array[i][1]) for j in abin]
+        else:
+            abin = [j+str(input_array[i]) for j in abin]
+    return abin
 
 class Evaluator(object):
     def __init__(self, file_list_path, img_path, txt_path):
@@ -30,41 +43,72 @@ class Evaluator(object):
 
         with torch.no_grad():
             for batch_idx, (images, digits_labels) in enumerate(self._loader):
-                images, digits_labels = images.cuda(), [digit_labels.cuda() for digit_labels in digits_labels]
                 digit1_logits, digit2_logits, digit3_logits, digit4_logits, digit5_logits, digit6_logits, digit7_logits, \
                 digit8_logits, digit9_logits, digit10_logits, digit11_logits, digit12_logits, digit13_logits = \
                     model.eval()(images)
                 
-                digit1_prediction = digit1_logits.max(1)[1]
-                digit2_prediction = digit2_logits.max(1)[1]
-                digit3_prediction = digit3_logits.max(1)[1]
-                digit4_prediction = digit4_logits.max(1)[1]
-                digit5_prediction = digit5_logits.max(1)[1]
-                digit6_prediction = digit6_logits.max(1)[1]
-                digit7_prediction = digit7_logits.max(1)[1]
-                digit8_prediction = digit8_logits.max(1)[1]
-                digit9_prediction = digit9_logits.max(1)[1]
-                digit10_prediction = digit10_logits.max(1)[1]
-                digit11_prediction = digit11_logits.max(1)[1]
-                digit12_prediction = digit12_logits.max(1)[1]
-                digit13_prediction = digit13_logits.max(1)[1]
-
-                num_correct += (digit1_prediction.eq(digits_labels[0]) &
-                                digit2_prediction.eq(digits_labels[1]) &
-                                digit3_prediction.eq(digits_labels[2]) &
-                                digit4_prediction.eq(digits_labels[3]) &
-                                digit5_prediction.eq(digits_labels[4]) &
-                                digit6_prediction.eq(digits_labels[5]) &
-                                digit7_prediction.eq(digits_labels[6]) &
-                                digit8_prediction.eq(digits_labels[7]) &
-                                digit9_prediction.eq(digits_labels[8]) &
-                                digit10_prediction.eq(digits_labels[9]) &
-                                digit11_prediction.eq(digits_labels[10]) &
-                                digit12_prediction.eq(digits_labels[11]) &
-                                digit13_prediction.eq(digits_labels[12])).cpu().sum()
+                digit1_prob = F.softmax(digit1_logits, 1)[0].numpy()
+                digit2_prob = F.softmax(digit2_logits, 1)[0].numpy()
+                digit3_prob = F.softmax(digit3_logits, 1)[0].numpy()
+                digit4_prob = F.softmax(digit4_logits, 1)[0].numpy()
+                digit5_prob = F.softmax(digit5_logits, 1)[0].numpy()
+                digit6_prob = F.softmax(digit6_logits, 1)[0].numpy()
+                digit7_prob = F.softmax(digit7_logits, 1)[0].numpy()
+                digit8_prob = F.softmax(digit8_logits, 1)[0].numpy()
+                digit9_prob = F.softmax(digit9_logits, 1)[0].numpy()
+                digit10_prob = F.softmax(digit10_logits, 1)[0].numpy()
+                digit11_prob = F.softmax(digit11_logits, 1)[0].numpy()
+                digit12_prob = F.softmax(digit12_logits, 1)[0].numpy()
+                digit13_prob = F.softmax(digit13_logits, 1)[0].numpy()
                 
+                digit1_2max_idx = digit1_prob.argsort()[-2:][::-1]
+                digit2_2max_idx = digit2_prob.argsort()[-2:][::-1]
+                digit3_2max_idx = digit3_prob.argsort()[-2:][::-1]
+                digit4_2max_idx = digit4_prob.argsort()[-2:][::-1]
+                digit5_2max_idx = digit5_prob.argsort()[-2:][::-1]
+                digit6_2max_idx = digit6_prob.argsort()[-2:][::-1]
+                digit7_2max_idx = digit7_prob.argsort()[-2:][::-1]
+                digit8_2max_idx = digit8_prob.argsort()[-2:][::-1]
+                digit9_2max_idx = digit9_prob.argsort()[-2:][::-1]
+                digit10_2max_idx = digit10_prob.argsort()[-2:][::-1]
+                digit11_2max_idx = digit11_prob.argsort()[-2:][::-1]
+                digit12_2max_idx = digit12_prob.argsort()[-2:][::-1]
+                digit13_2max_idx = digit13_prob.argsort()[-2:][::-1]
+                
+                digits_2max_idx = [digit1_2max_idx, digit2_2max_idx, digit3_2max_idx, digit4_2max_idx, digit5_2max_idx, digit6_2max_idx, digit7_2max_idx, digit8_2max_idx, digit9_2max_idx, digit10_2max_idx, digit11_2max_idx, digit12_2max_idx, digit13_2max_idx]
+                
+                gaps = [digit1_prob[digit1_2max_idx[0]]  -digit1_prob[digit1_2max_idx[1]],
+                        digit2_prob[digit2_2max_idx[0]]  -digit2_prob[digit2_2max_idx[1]],
+                        digit3_prob[digit3_2max_idx[0]]  -digit3_prob[digit3_2max_idx[1]],
+                        digit4_prob[digit4_2max_idx[0]]  -digit4_prob[digit4_2max_idx[1]],
+                        digit5_prob[digit5_2max_idx[0]]  -digit5_prob[digit5_2max_idx[1]],
+                        digit6_prob[digit6_2max_idx[0]]  -digit6_prob[digit6_2max_idx[1]],
+                        digit7_prob[digit7_2max_idx[0]]  -digit7_prob[digit7_2max_idx[1]],
+                        digit8_prob[digit8_2max_idx[0]]  -digit8_prob[digit8_2max_idx[1]],
+                        digit9_prob[digit9_2max_idx[0]]  -digit9_prob[digit9_2max_idx[1]],
+                        digit10_prob[digit10_2max_idx[0]]-digit10_prob[digit10_2max_idx[1]],
+                        digit11_prob[digit11_2max_idx[0]]-digit11_prob[digit11_2max_idx[1]],
+                        digit12_prob[digit12_2max_idx[0]]-digit12_prob[digit12_2max_idx[1]],
+                        digit13_prob[digit13_2max_idx[0]]-digit13_prob[digit13_2max_idx[1]]]
+                picked_digits = []
+                for i in range(13):
+                    if gaps[i]<=0.75:
+                        picked_digits.append(list(digits_2max_idx[i]))
+                    else:
+                        picked_digits.append(digits_2max_idx[i][0])
+                all_combinations = make_combination(picked_digits)
+                predicted_sequence = all_combinations[0]
+                for combin in all_combinations:
+                    if checksum(combin):
+                        predicted_sequence = combin
+                        break
+                label_digits = [each_digit.numpy()[0] for each_digit in digits_labels]
+                label_sequence = ''.join(map(str, label_digits))
+                if label_sequence == predicted_sequence:
+                    num_correct+=1
+
         dataset_size = len(self._loader.dataset)
-        accuracy = num_correct.item() / dataset_size
+        accuracy = num_correct / dataset_size
         return accuracy
 
 
@@ -78,11 +122,12 @@ parser.add_argument('-lr', '--learning_rate', default=1e-2, type=float, help='De
 parser.add_argument('-p', '--patience', default=100, type=int, help='Default 100, set -1 to train infinitely')
 parser.add_argument('-ds', '--decay_steps', default=10000, type=int, help='Default 10000')
 parser.add_argument('-dr', '--decay_rate', default=0.9, type=float, help='Default 0.9')
+parser.add_argument('-vf', '--val_files', default='../model/data/real_val.txt', help='directory to validation list file')
 
 
 def main(args):
-    val_img_path   ='../model/data/syn_train/img/'
-    val_txt_path   ='../model/data/syn_train/gt/'
+    val_img_path   ='../model/data/real/img/'
+    val_txt_path   ='../model/data/real/txt/'
     path_to_log_dir = args.logdir
     path_to_restore_checkpoint_file = args.restore_checkpoint
     training_options = {
@@ -94,12 +139,12 @@ def main(args):
     }
 
     model = Model()
-    model.cuda()
+#     model.cuda()
     model.restore(path_to_restore_checkpoint_file)
     
     print('Start evaluating')
     
-    evaluator = Evaluator(val_img_path, val_txt_path)
+    evaluator = Evaluator(args.val_files, val_img_path, val_txt_path)
     accuracy = evaluator.evaluate(model)
     print('accuracy: ', accuracy)
 
