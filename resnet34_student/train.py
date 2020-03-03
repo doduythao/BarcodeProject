@@ -17,21 +17,35 @@ from torchvision import transforms
 from dataset import BarcodeDataset
 from evaluator import Evaluator
 from model import Model
+from model_teacher import TcModel
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-d', '--data_dir', default='./data', help='directory to read LMDB files')
 parser.add_argument('-l', '--logdir', default='./logs', help='directory to write logs')
-parser.add_argument('-r', '--restore_checkpoint', default=None,
-                    help='path to restore checkpoint, e.g. ./logs/model-100.pth')
+parser.add_argument('-r', '--restore_checkpoint', default=None, help='path to restore checkpoint')
+parser.add_argument('-rt', '--restore_teacher', default='../resnet50_285/logs/model-1095000.pth', help='teacher path')
 parser.add_argument('-bs', '--batch_size', default=32, type=int, help='Default 32')
 parser.add_argument('-lr', '--learning_rate', default=1e-2, type=float, help='Default 1e-2')
 parser.add_argument('-p', '--patience', default=100, type=int, help='Default 100, set -1 to train infinitely')
 parser.add_argument('-ds', '--decay_steps', default=10000, type=int, help='Default 10000')
 parser.add_argument('-dr', '--decay_rate', default=0.95, type=float, help='Default 0.95')
-parser.add_argument('-tf', '--train_files', default='../model/data/syn_train.txt', help='directory to train list file')
-parser.add_argument('-vf', '--val_files', default='../model/data/real_full.txt', help='directory to validation list file')
+parser.add_argument('-tf', '--train_files', default='../model/data/syn_train.txt', help='path to train list file')
+parser.add_argument('-vf', '--val_files', default='../model/data/real_full.txt', help='path to val list file')
 parser.add_argument('-ba', '--best_acc', default=0.0, type=float, help='Default 0.0')
 
+def loss_fn_kd(outputs, labels, teacher_outputs, alpha, T):
+    """
+    Compute the knowledge-distillation (KD) loss given outputs, labels.
+    "Hyperparameters": temperature and alpha
+    NOTE: the KL Divergence for PyTorch comparing the softmaxs of teacher
+    and student expects the input tensor to be log probabilities! See Issue #2
+    """
+    KD_loss = 0
+    for i in range(13):
+        KD_loss += (nn.KLDivLoss()(F.log_softmax(outputs[i]/T, dim=1),
+                                   F.softmax(teacher_outputs[i]/T, dim=1)) * (alpha * T * T) + 
+                    F.cross_entropy(outputs[i], labels[i]) * (1. - alpha))
+    return KD_loss
 
 def _loss(digit1_logits, digit2_logits, digit3_logits, digit4_logits, digit5_logits, digit6_logits, digit7_logits, digit8_logits, digit9_logits, digit10_logits, digit11_logits, digit12_logits, digit13_logits, digits_labels):
     digit1_cross_entropy = F.cross_entropy(digit1_logits, digits_labels[0])
@@ -69,6 +83,10 @@ def _train(train_img_path, train_txt_path, val_img_path, val_txt_path, path_to_l
 
     model = Model()
     model.cuda()
+    
+    teacher = TcModel()
+    teacher.cuda()
+    teacher.restore(training_options['restore_teacher'])
 
     transform = transforms.Compose([
                 transforms.Resize([285, 285]),
@@ -98,8 +116,13 @@ def _train(train_img_path, train_txt_path, val_img_path, val_txt_path, path_to_l
         for batch_idx, (images, digits_labels) in enumerate(train_loader):
             start_time = time.time()
             images, digits_labels = images.cuda(), [digit_label.cuda() for digit_label in digits_labels]
-            digit1_logits, digit2_logits, digit3_logits, digit4_logits, digit5_logits, digit6_logits, digit7_logits, digit8_logits, digit9_logits, digit10_logits, digit11_logits, digit12_logits, digit13_logits = model.train()(images)
-            loss = _loss(digit1_logits, digit2_logits, digit3_logits, digit4_logits, digit5_logits, digit6_logits, digit7_logits, digit8_logits, digit9_logits, digit10_logits, digit11_logits, digit12_logits, digit13_logits, digits_labels)
+            
+            dls = model.train()(images)
+            with torch.no_grad():
+                tdls = teacher.eval()(images)
+            
+#             loss = _loss(d1l, d2l, d3l, d4l, d5l, d6l, d7l, d8l, d9l, d10l, d11l, d12l, d13l, digits_labels)
+            loss = loss_fn_kd(dls, digits_labels, tdls, 0.4, 5)
             optimizer.zero_grad()
             loss.backward()
 
@@ -153,7 +176,8 @@ def main(args):
         'decay_rate': args.decay_rate,
         'train_files': args.train_files,
         'val_files': args.val_files,
-        'best_acc': args.best_acc
+        'best_acc': args.best_acc,
+        'restore_teacher': args.restore_teacher
     }
 
     if not os.path.exists(path_to_log_dir):
