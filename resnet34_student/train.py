@@ -32,6 +32,8 @@ parser.add_argument('-dr', '--decay_rate', default=0.95, type=float, help='Defau
 parser.add_argument('-tf', '--train_files', default='../model/data/syn_train.txt', help='path to train list file')
 parser.add_argument('-vf', '--val_files', default='../model/data/real_full.txt', help='path to val list file')
 parser.add_argument('-ba', '--best_acc', default=0.0, type=float, help='Default 0.0')
+parser.add_argument('-a', '--alpha', default=0.2, type=float, help='Default 0.2')
+parser.add_argument('-t', '--tem', default=10.0, type=float, help='Around 1 - 20')
 
 def loss_fn_kd(outputs, labels, teacher_outputs, alpha, T):
     """
@@ -46,26 +48,6 @@ def loss_fn_kd(outputs, labels, teacher_outputs, alpha, T):
                                    F.softmax(teacher_outputs[i]/T, dim=1)) * (alpha * T * T) + 
                     F.cross_entropy(outputs[i], labels[i]) * (1. - alpha))
     return KD_loss
-
-def _loss(digit1_logits, digit2_logits, digit3_logits, digit4_logits, digit5_logits, digit6_logits, digit7_logits, digit8_logits, digit9_logits, digit10_logits, digit11_logits, digit12_logits, digit13_logits, digits_labels):
-    digit1_cross_entropy = F.cross_entropy(digit1_logits, digits_labels[0])
-    digit2_cross_entropy = F.cross_entropy(digit2_logits, digits_labels[1])
-    digit3_cross_entropy = F.cross_entropy(digit3_logits, digits_labels[2])
-    digit4_cross_entropy = F.cross_entropy(digit4_logits, digits_labels[3])
-    digit5_cross_entropy = F.cross_entropy(digit5_logits, digits_labels[4])
-    digit6_cross_entropy = F.cross_entropy(digit6_logits, digits_labels[5])
-    digit7_cross_entropy = F.cross_entropy(digit7_logits, digits_labels[6])
-    digit8_cross_entropy = F.cross_entropy(digit8_logits, digits_labels[7])
-    digit9_cross_entropy = F.cross_entropy(digit9_logits, digits_labels[8])
-    digit10_cross_entropy = F.cross_entropy(digit10_logits, digits_labels[9])
-    digit11_cross_entropy = F.cross_entropy(digit11_logits, digits_labels[10])
-    digit12_cross_entropy = F.cross_entropy(digit12_logits, digits_labels[11])
-    digit13_cross_entropy = F.cross_entropy(digit13_logits, digits_labels[12])
-    loss = digit1_cross_entropy + digit2_cross_entropy + digit3_cross_entropy + digit4_cross_entropy \
-           + digit5_cross_entropy + digit6_cross_entropy + digit7_cross_entropy + digit8_cross_entropy \
-           + digit9_cross_entropy + digit10_cross_entropy + digit11_cross_entropy + digit12_cross_entropy \
-           + digit13_cross_entropy
-    return loss
 
 
 def _train(train_img_path, train_txt_path, val_img_path, val_txt_path, path_to_log_dir,
@@ -121,12 +103,10 @@ def _train(train_img_path, train_txt_path, val_img_path, val_txt_path, path_to_l
             with torch.no_grad():
                 tdls = teacher.eval()(images)
             
-#             loss = _loss(d1l, d2l, d3l, d4l, d5l, d6l, d7l, d8l, d9l, d10l, d11l, d12l, d13l, digits_labels)
-            loss = loss_fn_kd(dls, digits_labels, tdls, 0.4, 5)
+            loss = loss_fn_kd(dls, digits_labels, tdls, training_options['alpha'], training_options['tem'])
             optimizer.zero_grad()
             loss.backward()
 
-#             torch.nn.utils.clip_grad_norm_(model.parameters(), 3.0)
             optimizer.step()
             scheduler.step()
             step += 1
@@ -177,7 +157,9 @@ def main(args):
         'train_files': args.train_files,
         'val_files': args.val_files,
         'best_acc': args.best_acc,
-        'restore_teacher': args.restore_teacher
+        'restore_teacher': args.restore_teacher,
+        'alpha' : args.alpha,
+        'tem' :args.tem
     }
 
     if not os.path.exists(path_to_log_dir):
