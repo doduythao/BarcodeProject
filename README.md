@@ -7,7 +7,7 @@ python 3.6
     pytorch
     torchvision
     scipy
-    pillow
+    pillow==6.1
 
 ## Prepare Dataset
 
