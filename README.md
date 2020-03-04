@@ -1,7 +1,9 @@
 # BarcodeProject
 
 ## Package requirements
+
 python 3.6
+
 `pytorch
 torchvision
 scipy
