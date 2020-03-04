@@ -1,12 +1,12 @@
 # BarcodeProject
 
-Python 3.6
-
-torch 1.0
-
-torchvision 0.2.1
-
-visdom
+## Package requirements
+`python 3.6
+pytorch
+torchvision
+scipy
+pillow
+`
 
 ## Download dataset
 
