@@ -36,7 +36,7 @@ At the `data` folder, `unzip -q <downloaded zips' files>`
     cp -a add_syn_train/gt/. syn_train/gt/
     
     cp -a add_syn_train2/img/. syn_train/img/
-    cp -a add_syn_train2/gt/. syn_train/gt/
+    cp -a add_syn_train2/txt/. syn_train/gt/
     
     cp -a real_train_aug/img/. syn_train/img/
     cp -a real_train_aug/txt/. syn_train/gt/
