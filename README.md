@@ -12,7 +12,7 @@ pillow
 
 ## Prepare Dataset
 
-Make `data` folder at `<this repo's root>/model/` and `cd` to this folder, then do following tasks:
+Make `data` folder at `<this repo's root>/model/` and `cd` to this `data` folder, then do following tasks:
 
 ### Download
 
@@ -28,4 +28,5 @@ Make `data` folder at `<this repo's root>/model/` and `cd` to this folder, then 
 
 ### Unzip and arrange
 
+At `data` folder, `unzip -q <downloaded zip's files>`
 
