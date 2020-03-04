@@ -51,4 +51,9 @@ Now, we have the file tree like this:
       real_train.txt
       real_val.txt
       syn_train.txt
+
 delete all other directories and zip files.
+
+    rm -r syn_train.zip add_syn_train.zip add_syn_train2.zip real_train_aug.zip real.zip list.zip add_syn_train/  add_syn_train2/ real_train_aug/
+    
+
