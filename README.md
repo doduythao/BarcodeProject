@@ -10,7 +10,11 @@ scipy
 pillow
 `
 
-## Download dataset
+## Prepare Dataset
+
+Make `data` folder at `<this repo's root>/model/` and `cd` to this folder, then do following tasks:
+
+### Download
 
 `wget --content-disposition --no-check-certificate "https://onedrive.live.com/download?cid=768D72B2AD0A3FD8&resid=768D72B2AD0A3FD8%2115080&authkey=ACqCpXOCVuytFu4"`
 
@@ -21,3 +25,7 @@ pillow
 `wget --content-disposition --no-check-certificate "https://onedrive.live.com/download?cid=768D72B2AD0A3FD8&resid=768D72B2AD0A3FD8%2115086&authkey=AF6RnFRgYAmdz70"`
 
 `wget --content-disposition --no-check-certificate "https://onedrive.live.com/download?cid=768D72B2AD0A3FD8&resid=768D72B2AD0A3FD8%2115085&authkey=ALhaV7mtopohBGI"`
+
+### Unzip and arrange
+
+
