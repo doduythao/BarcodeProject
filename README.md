@@ -40,3 +40,15 @@ At the `data` folder, `unzip -q <downloaded zips' files>`
     
     cp -a real_train_aug/img/. syn_train/img/
     cp -a real_train_aug/txt/. syn_train/gt/
+    
+Now, we have the file tree like this:
+
+    data/
+      real/
+      syn_train/
+      full_train.txt
+      real_full.txt
+      real_train.txt
+      real_val.txt
+      syn_train.txt
+delete all other directories and zip files.
