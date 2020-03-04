@@ -30,5 +30,13 @@ Make `data` folder at `<this repo's root>/model/` and `cd` to this `data` folder
 
 ### Unzip and arrange
 
-At `data` folder, `unzip -q <downloaded zip's files>`
-
+At the `data` folder, `unzip -q <downloaded zips' files>`
+(Copy to merge train folders into only 1.)
+    cp -a add_syn_train/img/. syn_train/img/
+    cp -a add_syn_train/gt/. syn_train/gt/
+    
+    cp -a add_syn_train2/img/. syn_train/img/
+    cp -a add_syn_train2/gt/. syn_train/gt/
+    
+    cp -a real_train_aug/img/. syn_train/img/
+    cp -a real_train_aug/txt/. syn_train/gt/
