@@ -56,4 +56,6 @@ delete all other directories and zip files.
 
     rm -r syn_train.zip add_syn_train.zip add_syn_train2.zip real_train_aug.zip real.zip list.zip add_syn_train/  add_syn_train2/ real_train_aug/
     
-
+## Train
+Go to each model folder, preview the train.py to learn more about the params to fill.
+Run `python train.py` with params.
