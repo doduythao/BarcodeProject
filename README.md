@@ -25,7 +25,7 @@ Make `data` folder at `<this repo's root>/model/` and `cd` to this `data` folder
 
     wget --content-disposition --no-check-certificate "https://onedrive.live.com/download?cid=768D72B2AD0A3FD8&resid=768D72B2AD0A3FD8%2115085&authkey=ALhaV7mtopohBGI"
 
-    wget --content-disposition --no-check-certificate "https://onedrive.live.com/download?cid=768D72B2AD0A3FD8&resid=768D72B2AD0A3FD8%2115090&authkey=ABJ0T07qfYiT5Xs"
+    wget --content-disposition --no-check-certificate "https://onedrive.live.com/download?cid=768D72B2AD0A3FD8&resid=768D72B2AD0A3FD8%2115090&authkey=APEiGfB-7IETq8A"
 
 ### Unzip and arrange
 
