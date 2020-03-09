@@ -39,31 +39,42 @@ class Evaluator(object):
 
     def evaluate(self, model, threshold):
         num_correct = 0
+        num_false = 0
 
         with torch.no_grad():
             for batch_idx, (images, digits_labels) in enumerate(self._loader):
-                dls = model.eval()(images)
-                dpbs = [F.softmax(dl, 1)[0].numpy() for dl in dls]
-                dmaxidxs = [dpb.argsort()[-2:][::-1] for dpb in dpbs]
-                gaps = [dpbs[i][dmaxidxs[i][0]] - dpbs[i][dmaxidxs[i][1]] for i in range(13)]
-                chosen_maxidxs = np.argsort(gaps)[:threshold]
-                picked_digits = []
-                for i in range(13):
-                    if i in chosen_maxidxs:
-                        picked_digits.append(list(dmaxidxs[i]))
-                    else:
-                        picked_digits.append(dmaxidxs[i][0])
-                all_combinations = make_combination(picked_digits)
-                predicted_sequence = all_combinations[0]
-                for combin in all_combinations:
-                    if checksum(combin):
-                        predicted_sequence = combin
-                        break
-                label_digits = [each_digit.numpy()[0] for each_digit in digits_labels]
-                label_sequence = ''.join(map(str, label_digits))
-                if label_sequence == predicted_sequence:
-                    num_correct+=1
+                images_vars = [images, images.transpose(2,3), images.flip(3), images.transpose(2,3).flip(3)]
+                for var in images_vars:
+                    dls = model.eval()(var)
+                    dpbs = [F.softmax(dl, 1)[0].numpy() for dl in dls]
+                    dmaxidxs = [dpb.argsort()[-2:][::-1] for dpb in dpbs]
+                    gaps = [dpbs[i][dmaxidxs[i][0]] - dpbs[i][dmaxidxs[i][1]] for i in range(13)]
+                    chosen_maxidxs = np.argsort(gaps)[:threshold]
+                    picked_digits = []
+                    for i in range(13):
+                        if i in chosen_maxidxs:
+                            picked_digits.append(list(dmaxidxs[i]))
+                        else:
+                            picked_digits.append(dmaxidxs[i][0])
+                    all_combinations = make_combination(picked_digits)
+                    checksum_checked = False
+                    predicted_sequence = all_combinations[0]
+                    for combin in all_combinations:
+                        if checksum(combin):
+                            predicted_sequence = combin
+                            checksum_checked = True
+                            break
 
+                    if checksum_checked:
+                        label_digits = [each_digit.numpy()[0] for each_digit in digits_labels]
+                        label_sequence = ''.join(map(str, label_digits))
+                        if label_sequence == predicted_sequence:
+                            num_correct+=1
+                        else:
+                            num_false+=1
+                        break
+        
+        print('false prediction:', num_false)
         dataset_size = len(self._loader.dataset)
         accuracy = num_correct / dataset_size
         return accuracy
