@@ -21,36 +21,23 @@ from model import Model
 parser = argparse.ArgumentParser()
 parser.add_argument('-d', '--data_dir', default='./data', help='directory to read LMDB files')
 parser.add_argument('-l', '--logdir', default='./logs', help='directory to write logs')
-parser.add_argument('-r', '--restore_checkpoint', default=None,
-                    help='path to restore checkpoint, e.g. ./logs/model-100.pth')
+parser.add_argument('-r', '--restore_checkpoint', default=None, help='path to restore checkpoint')
+parser.add_argument('-rt', '--restore_teacher', default='../resnet50_285/logs/model-1095000.pth', help='teacher path')
 parser.add_argument('-bs', '--batch_size', default=32, type=int, help='Default 32')
 parser.add_argument('-lr', '--learning_rate', default=1e-2, type=float, help='Default 1e-2')
 parser.add_argument('-p', '--patience', default=100, type=int, help='Default 100, set -1 to train infinitely')
 parser.add_argument('-ds', '--decay_steps', default=10000, type=int, help='Default 10000')
 parser.add_argument('-dr', '--decay_rate', default=0.95, type=float, help='Default 0.95')
-parser.add_argument('-tf', '--train_files', default='../model/data/syn_train.txt', help='directory to train list file')
-parser.add_argument('-vf', '--val_files', default='../model/data/real_full.txt', help='directory to validation list file')
+parser.add_argument('-tf', '--train_files', default='../model/data/syn_train.txt', help='path to train list file')
+parser.add_argument('-vf', '--val_files', default='../model/data/real_full.txt', help='path to val list file')
 parser.add_argument('-ba', '--best_acc', default=0.0, type=float, help='Default 0.0')
+parser.add_argument('-a', '--alpha', default=0.2, type=float, help='Default 0.2')
+parser.add_argument('-t', '--tem', default=10.0, type=float, help='Around 1 - 20')
 
-
-def _loss(digit1_logits, digit2_logits, digit3_logits, digit4_logits, digit5_logits, digit6_logits, digit7_logits, digit8_logits, digit9_logits, digit10_logits, digit11_logits, digit12_logits, digit13_logits, digits_labels):
-    digit1_cross_entropy = F.cross_entropy(digit1_logits, digits_labels[0])
-    digit2_cross_entropy = F.cross_entropy(digit2_logits, digits_labels[1])
-    digit3_cross_entropy = F.cross_entropy(digit3_logits, digits_labels[2])
-    digit4_cross_entropy = F.cross_entropy(digit4_logits, digits_labels[3])
-    digit5_cross_entropy = F.cross_entropy(digit5_logits, digits_labels[4])
-    digit6_cross_entropy = F.cross_entropy(digit6_logits, digits_labels[5])
-    digit7_cross_entropy = F.cross_entropy(digit7_logits, digits_labels[6])
-    digit8_cross_entropy = F.cross_entropy(digit8_logits, digits_labels[7])
-    digit9_cross_entropy = F.cross_entropy(digit9_logits, digits_labels[8])
-    digit10_cross_entropy = F.cross_entropy(digit10_logits, digits_labels[9])
-    digit11_cross_entropy = F.cross_entropy(digit11_logits, digits_labels[10])
-    digit12_cross_entropy = F.cross_entropy(digit12_logits, digits_labels[11])
-    digit13_cross_entropy = F.cross_entropy(digit13_logits, digits_labels[12])
-    loss = digit1_cross_entropy + digit2_cross_entropy + digit3_cross_entropy + digit4_cross_entropy \
-           + digit5_cross_entropy + digit6_cross_entropy + digit7_cross_entropy + digit8_cross_entropy \
-           + digit9_cross_entropy + digit10_cross_entropy + digit11_cross_entropy + digit12_cross_entropy \
-           + digit13_cross_entropy
+def _loss(outputs, labels):
+    loss = 0
+    for i in range(13):
+        loss += F.cross_entropy(outputs[i], labels[i])
     return loss
 
 
@@ -98,12 +85,13 @@ def _train(train_img_path, train_txt_path, val_img_path, val_txt_path, path_to_l
         for batch_idx, (images, digits_labels) in enumerate(train_loader):
             start_time = time.time()
             images, digits_labels = images.cuda(), [digit_label.cuda() for digit_label in digits_labels]
-            digit1_logits, digit2_logits, digit3_logits, digit4_logits, digit5_logits, digit6_logits, digit7_logits, digit8_logits, digit9_logits, digit10_logits, digit11_logits, digit12_logits, digit13_logits = model.train()(images)
-            loss = _loss(digit1_logits, digit2_logits, digit3_logits, digit4_logits, digit5_logits, digit6_logits, digit7_logits, digit8_logits, digit9_logits, digit10_logits, digit11_logits, digit12_logits, digit13_logits, digits_labels)
+            
+            dls = model.train()(images)
+            
+            loss = _loss(dls, digits_labels)
             optimizer.zero_grad()
             loss.backward()
 
-#             torch.nn.utils.clip_grad_norm_(model.parameters(), 3.0)
             optimizer.step()
             scheduler.step()
             step += 1
@@ -153,7 +141,10 @@ def main(args):
         'decay_rate': args.decay_rate,
         'train_files': args.train_files,
         'val_files': args.val_files,
-        'best_acc': args.best_acc
+        'best_acc': args.best_acc,
+        'restore_teacher': args.restore_teacher,
+        'alpha' : args.alpha,
+        'tem' :args.tem
     }
 
     if not os.path.exists(path_to_log_dir):

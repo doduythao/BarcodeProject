@@ -16,14 +16,14 @@ class Model(nn.Module):
     def __init__(self):
         super(Model, self).__init__()
         self._hidden1 = nn.Sequential(
-            nn.Conv2d(in_channels=3, out_channels=32, kernel_size=5, padding=2),
-            nn.BatchNorm2d(num_features=32),
+            nn.Conv2d(in_channels=3, out_channels=48, kernel_size=5, padding=2),
+            nn.BatchNorm2d(num_features=48),
             nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=1, padding=1),
+            nn.MaxPool2d(kernel_size=2, stride=2, padding=1),
             nn.Dropout(0.25)
         )
         self._hidden2 = nn.Sequential(
-            nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3, padding=2),
+            nn.Conv2d(in_channels=48, out_channels=64, kernel_size=3, padding=2),
             nn.BatchNorm2d(num_features=64),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=1, padding=1),
@@ -33,19 +33,19 @@ class Model(nn.Module):
             nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3, padding=2),
             nn.BatchNorm2d(num_features=128),
             nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=1, padding=1),
+            nn.MaxPool2d(kernel_size=2, stride=2, padding=1),
             nn.Dropout(0.25)
         )
         self._hidden4 = nn.Sequential(
-            nn.Conv2d(in_channels=128, out_channels=256, kernel_size=3, padding=2),
-            nn.BatchNorm2d(num_features=256),
+            nn.Conv2d(in_channels=128, out_channels=16, kernel_size=3, padding=2),
+            nn.BatchNorm2d(num_features=16),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=1, padding=1),
             nn.Dropout(0.25)
         )
         
         self.fc1 = nn.Sequential(
-            nn.Linear(192, 4096),
+            nn.Linear(16*78*78, 4096),
             nn.ReLU(),
             nn.Dropout(0.25)
         )
@@ -73,8 +73,9 @@ class Model(nn.Module):
         x = self._hidden2(x)
         x = self._hidden3(x)
         x = self._hidden4(x)
-        print(x.shape)
-        x = x.reshape(x.size(0), -1)
+#         print(x.shape)
+#         x = x.reshape(x.size(0), -1)
+        x = x.view(x.size(0), 16*78*78)
         x = self.fc1(x)
         x = self.fc2(x)
 
