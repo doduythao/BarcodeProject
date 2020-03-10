@@ -26,6 +26,7 @@ parser.add_argument('-lr', '--learning_rate', default=1e-2, type=float, help='De
 parser.add_argument('-p', '--patience', default=100, type=int, help='Default 100, set -1 to train infinitely')
 parser.add_argument('-ds', '--decay_steps', default=10000, type=int, help='Default 10000')
 parser.add_argument('-dr', '--decay_rate', default=0.9, type=float, help='Default 0.9')
+parser.add_argument('-vf', '--val_files', default='../model/data/real_val.txt', help='directory to validation list file')
 
 
 def main(args):
@@ -41,13 +42,15 @@ def main(args):
         'decay_rate': args.decay_rate
     }
 
-    model = Model(21)
+    model = Model()
     model.cuda()
     model.restore(path_to_restore_checkpoint_file)
     
+    pytorch_total_params = sum(p.numel() for p in model.parameters())
+    print('Number of params: ', pytorch_total_params)
     print('Start evaluating')
     
-    evaluator = Evaluator(val_img_path, val_txt_path)
+    evaluator = Evaluator(args.val_files, val_img_path, val_txt_path)
     accuracy = evaluator.evaluate(model)
     print('accuracy: ', accuracy)
 

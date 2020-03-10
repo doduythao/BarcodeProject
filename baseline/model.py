@@ -8,105 +8,75 @@ import torch.nn as nn
 class Model(nn.Module):
     CHECKPOINT_FILENAME_PATTERN = 'model-{}.pth'
 
-    __constants__ = ['_hidden1', '_hidden2', '_hidden3', '_hidden4', '_hidden5',
-                     '_hidden6', '_hidden7', '_hidden8', '_hidden9', '_hidden10',
-                     '_features', '_classifier',
+    __constants__ = ['_hidden1', '_hidden2', '_hidden3', '_hidden4',
+                     'fc1', 'fc2',
                      '_digit1', '_digit2', '_digit3', '_digit4', '_digit5', '_digit6', '_digit7', '_digit8', '_digit9',
                      '_digit10', '_digit11', '_digit12', '_digit13']
 
-    def __init__(self, A):
-        self.A = A
+    def __init__(self):
         super(Model, self).__init__()
         self._hidden1 = nn.Sequential(
-            nn.Conv2d(in_channels=3, out_channels=48, kernel_size=5, padding=2),
-            nn.BatchNorm2d(num_features=48),
+            nn.Conv2d(in_channels=3, out_channels=32, kernel_size=5, padding=2),
+            nn.BatchNorm2d(num_features=32),
             nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2, padding=1),
-            nn.Dropout(0.2)
+            nn.MaxPool2d(kernel_size=2, stride=1, padding=1),
+            nn.Dropout(0.25)
         )
         self._hidden2 = nn.Sequential(
-            nn.Conv2d(in_channels=48, out_channels=64, kernel_size=5, padding=2),
+            nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3, padding=2),
             nn.BatchNorm2d(num_features=64),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=1, padding=1),
-            nn.Dropout(0.2)
+            nn.Dropout(0.25)
         )
         self._hidden3 = nn.Sequential(
-            nn.Conv2d(in_channels=64, out_channels=128, kernel_size=5, padding=2),
+            nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3, padding=2),
             nn.BatchNorm2d(num_features=128),
             nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2, padding=1),
-            nn.Dropout(0.2)
+            nn.MaxPool2d(kernel_size=2, stride=1, padding=1),
+            nn.Dropout(0.25)
         )
         self._hidden4 = nn.Sequential(
-            nn.Conv2d(in_channels=128, out_channels=160, kernel_size=5, padding=2),
-            nn.BatchNorm2d(num_features=160),
+            nn.Conv2d(in_channels=128, out_channels=256, kernel_size=3, padding=2),
+            nn.BatchNorm2d(num_features=256),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=1, padding=1),
-            nn.Dropout(0.3)
+            nn.Dropout(0.25)
         )
-        self._hidden5 = nn.Sequential(
-            nn.Conv2d(in_channels=160, out_channels=192, kernel_size=5, padding=2),
-            nn.BatchNorm2d(num_features=192),
+        
+        self.fc1 = nn.Sequential(
+            nn.Linear(192, 4096),
             nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2, padding=1),
-            nn.Dropout(0.3)
+            nn.Dropout(0.25)
         )
-        self._hidden6 = nn.Sequential(
-            nn.Conv2d(in_channels=192, out_channels=192, kernel_size=5, padding=2),
-            nn.BatchNorm2d(num_features=192),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=1, padding=1),
-            nn.Dropout(0.3)
-        )
-        self._hidden7 = nn.Sequential(
-            nn.Conv2d(in_channels=192, out_channels=192, kernel_size=5, padding=2),
-            nn.BatchNorm2d(num_features=192),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2, padding=1),
-            nn.Dropout(0.3)
-        )
-        self._hidden8 = nn.Sequential(
-            nn.Conv2d(in_channels=192, out_channels=192, kernel_size=5, padding=2),
-            nn.BatchNorm2d(num_features=192),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=1, padding=1),
-            nn.Dropout(0.3)
-        )
-        self._hidden9 = nn.Sequential(
-            nn.Linear(192 * A * A, 3072),
+        self.fc2 = nn.Sequential(
+            nn.Linear(4096, 4096),
             nn.ReLU()
         )
-        self._hidden10 = nn.Sequential(
-            nn.Linear(3072, 3072),
-            nn.ReLU()
-        )
-        self._digit1 = nn.Sequential(nn.Linear(3072, 10))
-        self._digit2 = nn.Sequential(nn.Linear(3072, 10))
-        self._digit3 = nn.Sequential(nn.Linear(3072, 10))
-        self._digit4 = nn.Sequential(nn.Linear(3072, 10))
-        self._digit5 = nn.Sequential(nn.Linear(3072, 10))
-        self._digit6 = nn.Sequential(nn.Linear(3072, 10))
-        self._digit7 = nn.Sequential(nn.Linear(3072, 10))
-        self._digit8 = nn.Sequential(nn.Linear(3072, 10))
-        self._digit9 = nn.Sequential(nn.Linear(3072, 10))
-        self._digit10 = nn.Sequential(nn.Linear(3072, 10))
-        self._digit11 = nn.Sequential(nn.Linear(3072, 10))
-        self._digit12 = nn.Sequential(nn.Linear(3072, 10))
-        self._digit13 = nn.Sequential(nn.Linear(3072, 10))
+        
+        self._digit1 = nn.Sequential(nn.Linear(4096, 10))
+        self._digit2 = nn.Sequential(nn.Linear(4096, 10))
+        self._digit3 = nn.Sequential(nn.Linear(4096, 10))
+        self._digit4 = nn.Sequential(nn.Linear(4096, 10))
+        self._digit5 = nn.Sequential(nn.Linear(4096, 10))
+        self._digit6 = nn.Sequential(nn.Linear(4096, 10))
+        self._digit7 = nn.Sequential(nn.Linear(4096, 10))
+        self._digit8 = nn.Sequential(nn.Linear(4096, 10))
+        self._digit9 = nn.Sequential(nn.Linear(4096, 10))
+        self._digit10 = nn.Sequential(nn.Linear(4096, 10))
+        self._digit11 = nn.Sequential(nn.Linear(4096, 10))
+        self._digit12 = nn.Sequential(nn.Linear(4096, 10))
+        self._digit13 = nn.Sequential(nn.Linear(4096, 10))
 
     def forward(self, x):
         x = self._hidden1(x)
         x = self._hidden2(x)
         x = self._hidden3(x)
         x = self._hidden4(x)
-        x = self._hidden5(x)
-        x = self._hidden6(x)
-        x = self._hidden7(x)
-        x = self._hidden8(x)
-        x = x.view(x.size(0), 192 * self.A * self.A)
-        x = self._hidden9(x)
-        x = self._hidden10(x)
+        print(x.shape)
+        x = x.reshape(x.size(0), -1)
+        x = self.fc1(x)
+        x = self.fc2(x)
 
         digit1_logits = self._digit1(x)
         digit2_logits = self._digit2(x)

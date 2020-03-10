@@ -45,6 +45,8 @@ def main(args):
     model.cuda()
     model.restore(path_to_restore_checkpoint_file)
     
+    pytorch_total_params = sum(p.numel() for p in model.parameters())
+    print('Number of params: ', pytorch_total_params)
     print('Start evaluating')
     
     evaluator = Evaluator(args.val_files, val_img_path, val_txt_path)
