@@ -37,36 +37,36 @@ class Model(nn.Module):
             nn.Dropout(0.25)
         )
         self._hidden4 = nn.Sequential(
-            nn.Conv2d(in_channels=128, out_channels=16, kernel_size=3, padding=2),
-            nn.BatchNorm2d(num_features=16),
+            nn.Conv2d(in_channels=128, out_channels=32, kernel_size=3, padding=2),
+            nn.BatchNorm2d(num_features=32),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=1, padding=1),
             nn.Dropout(0.25)
         )
         
         self.fc1 = nn.Sequential(
-            nn.Linear(16*78*78, 4096),
+            nn.Linear(32*78*78, 2048),
             nn.ReLU(),
             nn.Dropout(0.25)
         )
         self.fc2 = nn.Sequential(
-            nn.Linear(4096, 4096),
+            nn.Linear(2048, 2048),
             nn.ReLU()
         )
         
-        self._digit1 = nn.Sequential(nn.Linear(4096, 10))
-        self._digit2 = nn.Sequential(nn.Linear(4096, 10))
-        self._digit3 = nn.Sequential(nn.Linear(4096, 10))
-        self._digit4 = nn.Sequential(nn.Linear(4096, 10))
-        self._digit5 = nn.Sequential(nn.Linear(4096, 10))
-        self._digit6 = nn.Sequential(nn.Linear(4096, 10))
-        self._digit7 = nn.Sequential(nn.Linear(4096, 10))
-        self._digit8 = nn.Sequential(nn.Linear(4096, 10))
-        self._digit9 = nn.Sequential(nn.Linear(4096, 10))
-        self._digit10 = nn.Sequential(nn.Linear(4096, 10))
-        self._digit11 = nn.Sequential(nn.Linear(4096, 10))
-        self._digit12 = nn.Sequential(nn.Linear(4096, 10))
-        self._digit13 = nn.Sequential(nn.Linear(4096, 10))
+        self._digit1 = nn.Sequential(nn.Linear(2048, 10))
+        self._digit2 = nn.Sequential(nn.Linear(2048, 10))
+        self._digit3 = nn.Sequential(nn.Linear(2048, 10))
+        self._digit4 = nn.Sequential(nn.Linear(2048, 10))
+        self._digit5 = nn.Sequential(nn.Linear(2048, 10))
+        self._digit6 = nn.Sequential(nn.Linear(2048, 10))
+        self._digit7 = nn.Sequential(nn.Linear(2048, 10))
+        self._digit8 = nn.Sequential(nn.Linear(2048, 10))
+        self._digit9 = nn.Sequential(nn.Linear(2048, 10))
+        self._digit10 = nn.Sequential(nn.Linear(2048, 10))
+        self._digit11 = nn.Sequential(nn.Linear(2048, 10))
+        self._digit12 = nn.Sequential(nn.Linear(2048, 10))
+        self._digit13 = nn.Sequential(nn.Linear(2048, 10))
 
     def forward(self, x):
         x = self._hidden1(x)
@@ -75,7 +75,7 @@ class Model(nn.Module):
         x = self._hidden4(x)
 #         print(x.shape)
 #         x = x.reshape(x.size(0), -1)
-        x = x.view(x.size(0), 16*78*78)
+        x = x.view(x.size(0), 32*78*78)
         x = self.fc1(x)
         x = self.fc2(x)
 
