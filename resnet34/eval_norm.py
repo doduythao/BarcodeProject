@@ -1,7 +1,6 @@
 import argparse
 import os
 import time
-from datetime import datetime
 
 import numpy as np
 import torch
@@ -46,10 +45,14 @@ def main(args):
     model.cuda()
     model.restore(path_to_restore_checkpoint_file)
     
+    pytorch_total_params = sum(p.numel() for p in model.parameters())
+    print('Number of params: ', pytorch_total_params)
     print('Start evaluating')
     
     evaluator = Evaluator(args.val_files, val_img_path, val_txt_path)
+    start_time = time.time()
     accuracy = evaluator.evaluate(model)
+    print('duration: ', time.time() - start_time)
     print('accuracy: ', accuracy)
 
 
