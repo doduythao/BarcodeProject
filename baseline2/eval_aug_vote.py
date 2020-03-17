@@ -10,6 +10,9 @@ from dataset import BarcodeDataset
 from model import Model
 import time
 
+def most_common(lst):
+    return max(set(lst), key=lst.count)
+
 def checksum(sequence):
     total = 0
     for i in range(13):
@@ -44,6 +47,7 @@ class Evaluator(object):
         with torch.no_grad():
             for batch_idx, (images, digits_labels) in enumerate(self._loader):
                 images_vars = [images, images.transpose(2,3), images.flip(3), images.transpose(2,3).flip(3)]
+                candidates = []
                 for var in images_vars:
                     dls = model.eval()(var.cuda())
                     dpbs = [F.softmax(dl, 1)[0].cpu().numpy() for dl in dls]
@@ -57,22 +61,19 @@ class Evaluator(object):
                         else:
                             picked_digits.append(dmaxidxs[i][0])
                     all_combinations = make_combination(picked_digits)
-                    checksum_checked = False
-                    predicted_sequence = all_combinations[0]
                     for combin in all_combinations:
                         if checksum(combin):
-                            predicted_sequence = combin
-                            checksum_checked = True
-                            break
-
-                    if checksum_checked:
-                        label_digits = [each_digit.numpy()[0] for each_digit in digits_labels]
-                        label_sequence = ''.join(map(str, label_digits))
-                        if label_sequence == predicted_sequence:
-                            num_correct+=1
-                        else:
-                            num_false+=1
-                        break
+                            candidates.append(combin)
+                        
+                label_digits = [each_digit.numpy()[0] for each_digit in digits_labels]
+                label_sequence = ''.join(map(str, label_digits))
+#                 print(candidates)
+                if len(candidates)>0:
+                    predicted = most_common(candidates)
+                    if label_sequence == predicted:
+                        num_correct+=1
+                    else:
+                        num_false+=1
         
         print('false prediction:', num_false)
         dataset_size = len(self._loader.dataset)
