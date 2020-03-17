@@ -11,7 +11,7 @@ from model import Model
 import time
 
 def most_common(lst):
-    return max(set(lst), key=lst.count)
+    return max(lst, key=lst.count)
 
 def checksum(sequence):
     total = 0
@@ -67,7 +67,6 @@ class Evaluator(object):
                         
                 label_digits = [each_digit.numpy()[0] for each_digit in digits_labels]
                 label_sequence = ''.join(map(str, label_digits))
-#                 print(candidates)
                 if len(candidates)>0:
                     predicted = most_common(candidates)
                     if label_sequence == predicted:
